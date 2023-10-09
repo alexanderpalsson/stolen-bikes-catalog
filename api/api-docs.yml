@@ -1,0 +1,211 @@
+openapi: 3.0.0
+info:
+  title: Police Officer and Stolen Bike Case Management API
+  description: API for managing police officers and stolen bike cases.
+  version: 1.0.0
+paths:
+  /officers:
+    post:
+      summary: Create Officer
+      requestBody:
+        description: Officer details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOfficerReq'
+      responses:
+        '201':
+          description: Officer created successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Officer'
+        '400':
+          description: Bad request.
+        '500':
+          description: Internal server error.
+
+    get:
+      summary: Get All Officers
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Officer'
+        '500':
+          description: Internal server error.
+
+  /officers/{id}:
+    put:
+      summary: Update Officer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Officer ID
+      requestBody:
+        description: Updated officer details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOfficerReq'
+      responses:
+        '200':
+          description: Officer updated successfully.
+        '400':
+          description: Bad request.
+        '500':
+          description: Internal server error.
+
+    delete:
+      summary: Delete Officer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Officer ID
+      responses:
+        '204':
+          description: Officer deleted successfully.
+        '400':
+          description: Bad request.
+        '500':
+          description: Internal server error.
+
+  /reports:
+    post:
+      summary: Report Stolen Bike
+      requestBody:
+        description: Stolen bike case details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStolenBikeReportReq'
+      responses:
+        '201':
+          description: Stolen bike case reported successfully.
+        '400':
+          description: Bad request.
+        '500':
+          description: Internal server error.
+
+    get:
+      summary: Get All Stolen Bike Cases
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StolenBikeReport'
+        '500':
+          description: Internal server error.
+  /reports/{id}:
+    get:
+      summary: Get Stolen Bike Case by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Stolen Bike Case ID
+      responses:
+        '200':
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StolenBikeReport'
+        '400':
+          description: Bad request.
+        '404':
+          description: Stolen bike case not found.
+        '500':
+          description: Internal server error.
+  /reports/{id}/solved:
+    put:
+      summary: Mark Stolen Bike Case as Resolved
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Stolen Bike Case ID
+      responses:
+        '200':
+          description: Stolen bike case marked as resolved.
+        '400':
+          description: Bad request.
+        '500':
+          description: Internal server error.
+
+components:
+  schemas:
+    Officer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        assigned:
+          type: boolean
+    CreateOfficerReq:
+      type: object
+      properties:
+        name:
+          type: string
+    CreateStolenBikeReportReq:
+      type: object
+      properties:
+        brand:
+          type: integer
+        frameNumber:
+          type: string
+        characteristics:
+          type: boolean
+        reported_by:
+          type: string
+    StolenBikeReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        brand:
+          type: integer
+        frameNumber:
+          type: string
+        characteristics:
+          type: boolean
+        officer_id:
+          type: string
+        reported_by:
+          type: string
+        report_time:
+          type: string
+          format: date-time
+        resolved:
+          type: boolean
